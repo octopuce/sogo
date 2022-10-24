@@ -44,3 +44,14 @@ UI/WebServerResources/js/vendor/ckeditor/plugins/onchange/docs
 UI/WebServerResources/js/vendor/ckeditor/plugins/scayt/*.md
 UI/WebServerResources/js/vendor/ckeditor/skins/n1theme/*.md
 
+# debian packaging
+SoObjects/SOGo/SOGoSAML2Exceptions.h
+SoObjects/SOGo/SOGoSAML2Exceptions.m
+build-arch-stamp
+packaging/debian/.debhelper/
+packaging/debian/files
+packaging/debian/sogo-activesync*
+packaging/debian/sogo-dbg*
+packaging/debian/sogo-dev*
+packaging/debian/sogo*
+packaging/debian/tmp/
