@@ -1,3 +1,38 @@
+# SoGO for Debian
+
+This is a fork of the official [Sogo](https://github.com/Alinto/sogo) webmail.
+
+We forked this to get an easier way to create debian packages.
+
+# How To Build The Debian Package
+
+This Debian package can be built easily as follow (on a standard debian bullseye) :
+
+```
+
+# install the build-dependencies:
+apt install debhelper gobjc libgnustep-base-dev \
+  libmemcached-dev libxml2-dev libssl-dev libcurl4-openssl-dev \
+  liblasso3-dev libytnef0-dev libzip-dev libsodium-dev
+  
+# then install your locally-build sope packages:
+# note that you'll need libwbxml2 from debian bookworm (current as of 2022-10)
+apt install libsope-appserver4.9-dev libsope-core4.9-dev libsope-gdl1-4.9-dev \
+  libsope-ldap4.9-dev libsope-mime4.9-dev libsope-xml4.9-dev \
+  libwbxml2-dev libsbjson-dev 
+
+# this compiles the debian package.
+# adds --username=you@yourmachine to pgp-sign it
+# this signs using debian/changelog last maintainer email.
+debuild -d -- binary
+```
+
+You'll normally get sogo & sogo-activesync packages in the parent folder.
+
+You can then use dput to send your packages to a debian repository
+
+
+
 ## Contribute
 
 SOGo is a collaborative effort in order to create the best Free and Open Source groupware solution.
