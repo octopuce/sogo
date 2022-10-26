@@ -55,3 +55,6 @@ packaging/debian/sogo-dbg*
 packaging/debian/sogo-dev*
 packaging/debian/sogo*
 packaging/debian/tmp/
+
+# jsdoc
+Documentation/JavaScript-API/
