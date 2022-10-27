@@ -21,8 +21,8 @@ apt install debhelper gobjc libgnustep-base-dev \
   libmemcached-dev libxml2-dev libssl-dev libcurl4-openssl-dev \
   liblasso3-dev libytnef0-dev libzip-dev libsodium-dev
   
-# then install your locally-build sope packages:
-# note that you'll need libwbxml2 from debian bookworm (current as of 2022-10)
+# then install your locally-build sope packages (see our [SOPE fork for debian packaging too](https://github.com/octopuce/sope/tree/debian-packaging)) :
+# note that you'll need libwbxml2 from debian bookworm. You need to backport it yourself (current as of 2022-10)
 apt install libsope-appserver4.9-dev libsope-core4.9-dev libsope-gdl1-4.9-dev \
   libsope-ldap4.9-dev libsope-mime4.9-dev libsope-xml4.9-dev \
   libwbxml2-dev libsbjson-dev 
@@ -37,6 +37,25 @@ You'll normally get sogo & sogo-activesync packages in the parent folder.
 
 You can then use dput to send your packages to a debian repository
 
+# How to compile JS / CSS & use it at once
+
+If you have a running SOGo on the local machine, you can clone that repository, and do the following to push your changes to SOGo "live":
+
+```
+# First, if you want to change any scss,
+# please ensure you have the git submodules cloned too, as told in the developer manual 
+# then goes to the JS/CSS source code folder
+cd sogo/UI/WebServerResources/
+# replace the running code for SOGo by a symlink to your code (this must be accessible to sogo Linux user)
+sudo mv /usr/lib/GNUstep/SOGo/WebServerResources /usr/lib/GNUstep/SOGo/WebServerResources.orig
+sudo ln -s $PWD /usr/lib/GNUstep/SOGo/WebServerResources
+# install the tooling
+npm install
+# launch grunt (--force is required because sogo is using ES6 syntax, but doesn't tell...)
+grunt watch --force
+```
+
+Now you can change any scss or js file in the subfolders of UI/WebServerResources/ and when you save that file, grunt will rebuild the minified js and compiled css. 
 
 
 ## Contribute
