@@ -6,7 +6,13 @@ We forked this to get an easier way to create debian packages.
 
 # How To Build The Debian Package
 
-This Debian package can be built easily as follow (on a standard debian bullseye) :
+Please note that the source code of SOGo contains the pre-built minified & compiled versions of all JS & CSS.
+
+As a result, if you change any file in a subfolder of UI/WebServerResources/js or scss, you'll need to use grunt to compile those.
+
+Please look at the [SOGo Developer Guide](Documentation/SOGoDevelopersGuide.asciidoc) for that.
+
+This Debian package can be built (the Objective-C part) easily as follow (on a standard Debian Bullseye) :
 
 ```
 
