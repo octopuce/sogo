@@ -1012,4 +1012,11 @@
     return Message.$$resource.download(this.$absolutePath(), 'archiveAttachments', null, options);
   };
 
+    Message.prototype.$cloudupload = function() {
+
+        return fetch('/apps/octomail/impersonate').then(function(data) {
+            console.log('cloud impersonate OK');
+        });
+    };
+    
 })();

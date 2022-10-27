@@ -283,6 +283,12 @@
       });
     };
 
+      this.cloudupload = function () {
+          this.message.$cloudupload();
+          console.log('cloud upload');
+      };
+      
+      
     function toggleFullscreen() {
       vm.isFullscreen = !vm.isFullscreen;
     }

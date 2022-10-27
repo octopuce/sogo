@@ -333,6 +333,12 @@
           </md-chip-template>
         </md-chips>
         <div class="msg-header-buttons">
+
+          <md-button class="sg-icon-button"
+                     ng-click="editor.cloudupload()" >
+            <md-icon>cloud</md-icon>
+          </md-button>
+
           <label class="md-button md-icon-button" for="fileInput">
             <md-icon>attach_file</md-icon>
             <!-- <span><var:string label:value="Attach"/></span> -->
