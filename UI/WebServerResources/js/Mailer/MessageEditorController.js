@@ -27,6 +27,7 @@
       this.sendState = false;
       this.toggleFullscreen = toggleFullscreen;
       this.firstFocus = true;
+      this.cloudState = true;
 
       _initFileUploader();
 
@@ -284,8 +285,23 @@
     };
 
       this.cloudupload = function () {
+//          this.cloudState=false; // this disables the button until everything is loaded...
           this.message.$cloudupload();
-          console.log('cloud upload');
+//          $timeout(function() { this.cloudState=true; },2000); // reenable the button later on...
+	  document.addEventListener('get-files-path', (e) => {
+	      console.debug('Received "get-files-path" event')
+	      console.debug(e.detail)
+              /*
+	        const resultsP = document.getElementById('results')
+	        resultsP.innerHTML = 'Path of selected files:'
+	        e.detail.selection.forEach((path) => {
+		const p = document.createElement('p')
+		p.textContent = path
+		resultsP.appendChild(p)
+	        })
+              */
+	  })
+
       };
       
       

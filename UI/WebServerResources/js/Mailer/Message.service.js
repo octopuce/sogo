@@ -1012,11 +1012,25 @@
     return Message.$$resource.download(this.$absolutePath(), 'archiveAttachments', null, options);
   };
 
-    Message.prototype.$cloudupload = function() {
-
-        return fetch('/apps/octomail/impersonate').then(function(data) {
-            console.log('cloud impersonate OK');
+    Message.prototype.$cloudupload = async function() {
+       
+        
+        let response = await fetch('/octomail/nctoken.php');
+            // .then(function(data) {
+            // now we can show the nextcloud popup let's try importing it directly 
+        let data = await response.json();
+        import('./filePickerWrapper.js').then(() => { 
+            const filepicker = window.createFilePicker('mount_point', {
+		url: data.url,
+                login: data.username,
+                password: data.token,
+                multipleDownload: true,
+                enableGetFilesPath: true,
+                multipleDownload: true,
+            });
+            filepicker.getFilesPath();
         });
+        
     };
     
 })();
