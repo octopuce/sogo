@@ -27,7 +27,7 @@
       this.sendState = false;
       this.toggleFullscreen = toggleFullscreen;
       this.firstFocus = true;
-      this.cloudState = true;
+      this.cloudUploadUrl = '';
 
       _initFileUploader();
 
@@ -284,26 +284,19 @@
       });
     };
 
-      this.cloudupload = function () {
-//          this.cloudState=false; // this disables the button until everything is loaded...
-          this.message.$cloudupload();
-//          $timeout(function() { this.cloudState=true; },2000); // reenable the button later on...
-	  document.addEventListener('get-files-path', (e) => {
-	      console.debug('Received "get-files-path" event')
-	      console.debug(e.detail)
-              /*
-	        const resultsP = document.getElementById('results')
-	        resultsP.innerHTML = 'Path of selected files:'
-	        e.detail.selection.forEach((path) => {
-		const p = document.createElement('p')
-		p.textContent = path
-		resultsP.appendChild(p)
-	        })
-              */
-	  })
 
-      };
-      
+      this.cloudUpload = function () {
+          document.uploadUrl = vm.message.$absolutePath({asDraft: true, withResourcePath: true}) + '/save';
+          document.vm = vm; // is it doing a "pointer"-like reference or a full copy? no idea :) 
+          if (!document.clouduploadinstalled) { // we want to do this only ONCE, since we can't really remove the eventListener later on.
+	      document.addEventListener('get-files-path', function(e) { document.vm.message.$cloudupload_step2(document.uploadUrl, e.detail.selection); });
+              document.clouduploadinstalled=true; 
+          }
+          // launch the file picker:
+          this.message.$cloudupload(); 
+
+	};
+        
       
     function toggleFullscreen() {
       vm.isFullscreen = !vm.isFullscreen;

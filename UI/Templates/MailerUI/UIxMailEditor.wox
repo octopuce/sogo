@@ -335,8 +335,7 @@
         <div class="msg-header-buttons">
 
           <md-button class="sg-icon-button"
-                     ng-click="editor.cloudupload()" 
-                     ng-disabled="!(editor.cloudState)">
+                     ng-click="editor.cloudUpload()" >
             <md-icon>cloud</md-icon>
           </md-button>
 
