@@ -1012,42 +1012,5 @@
     return Message.$$resource.download(this.$absolutePath(), 'archiveAttachments', null, options);
   };
 
-    Message.prototype.$cloudupload = async function(posturl) {
-        let response = await fetch('/octomail/nctoken.php');
-            // .then(function(data) {
-            // now we can show the nextcloud popup let's try importing it directly 
-        let data = await response.json();
-        import('./filePickerWrapper.js').then(() => { 
-            const filepicker = window.createFilePicker('mount_point', {
-		url: data.url,
-                login: data.username,
-                password: data.token,
-                multipleDownload: true,
-                enableGetFilesPath: true,
-                multipleDownload: true,
-            });
-            filepicker.getFilesPath();
-        });
-        
-    };
-
-    // send the files to get from the nextcloud as attachment to ncupload:
-    Message.prototype.$cloudupload_step2 = async function(posturl,files) {
-        const formData = new FormData();
-        formData.append('url',posturl); // also the draft-upload url too
-        files.forEach((path) => {
-            formData.append('files[]',path);
-        });
-
-        let response = await fetch("/octomail/ncupload.php", {
-            method: 'POST', 
-            credentials: 'include',
-            body: formData            
-        });
-
-        let data = await response.json();
-        console.debug(data);
-        // here we receive an array of hash in "data.ids" 
-    };
     
 })();

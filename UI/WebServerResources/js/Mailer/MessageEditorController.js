@@ -27,9 +27,9 @@
       this.sendState = false;
       this.toggleFullscreen = toggleFullscreen;
       this.firstFocus = true;
-      this.cloudUploadUrl = '';
 
       _initFileUploader();
+      _initCloudUploader();
 
       // Read user's defaults
       if (Preferences.defaults.SOGoMailAutoSave)
@@ -162,6 +162,11 @@
       });
     }
 
+    function _initCloudUploader() {
+        import('./filePickerWrapper.js'); 
+    }
+
+
     function _updateFileUploader() {
       vm.uploader.url = vm.message.$absolutePath({asDraft: true, withResourcePath: true}) + '/save';
     }
@@ -286,16 +291,78 @@
 
 
       this.cloudUpload = function () {
-          document.uploadUrl = vm.message.$absolutePath({asDraft: true, withResourcePath: true}) + '/save';
           document.vm = vm; // is it doing a "pointer"-like reference or a full copy? no idea :) 
           if (!document.clouduploadinstalled) { // we want to do this only ONCE, since we can't really remove the eventListener later on.
-	      document.addEventListener('get-files-path', function(e) { document.vm.message.$cloudupload_step2(document.uploadUrl, e.detail.selection); });
+	      document.addEventListener('get-files-path', function(e) { 
+                  document.vm.cloudupload_step2(
+                      document.vm.message.$absolutePath({asDraft: true, withResourcePath: true}) + '/save',
+                      e.detail.selection
+                  ); 
+              });
               document.clouduploadinstalled=true; 
           }
           // launch the file picker:
-          this.message.$cloudupload(); 
+          this.cloudupload_step1(); 
 
 	};
+
+
+    this.cloudupload_step1 = async function() {
+        let response = await fetch('/octomail/nctoken.php');
+            // .then(function(data) {
+            // now we can show the nextcloud popup let's try importing it directly 
+        let data = await response.json();
+        const filepicker = window.createFilePicker('mount_point', {
+	    url: data.url,
+            login: data.username,
+            password: data.token,
+            multipleDownload: true,
+            enableGetFilesPath: true,
+            multipleDownload: true,
+        });
+        filepicker.getFilesPath();
+        
+    }
+
+    // send the files to get from the nextcloud as attachment to ncupload:
+    this.cloudupload_step2 = async function(posturl,files) {
+        const formData = new FormData();
+        formData.append('url',posturl); // also the draft-upload url too
+        files.forEach((path) => {
+            formData.append('files[]',path);
+        });
+
+        // this url is uploading server-to-server from Nextcloud to Sogo. 
+        // you may need to change your url and change to your own code, using our provided ncupload.php code as example.  
+        let response = await fetch("/octomail/ncupload.php", {
+            method: 'POST', 
+            credentials: 'include',
+            body: formData            
+        });
+
+        let data = await response.json();
+
+        if (data.errors && data.errors.length==0) {
+             let attrs=data.ids; 
+             // we add the attachments to the existing upload stack:
+             for (let i = 0; i < attrs.length; i++) {
+                 data = {
+                     name: attrs[i].filename.substr(attrs[i].filename.lastIndexOf('/') + 1)
+                 };
+                 let fileItem = new FileUploader.FileItem(vm.uploader, data);
+                 fileItem.progress = 100;
+                 fileItem.isUploaded = true;
+                 fileItem.isSuccess = true;
+                 fileItem.inlineUrl = attrs[i].url;
+                 vm.uploader.queue.push(fileItem);
+             }
+             this.save({toast: false});
+            
+         } else {
+             console.debug("error found :/ data below:");
+             console.debug(data);
+         }
+     }
         
       
     function toggleFullscreen() {
