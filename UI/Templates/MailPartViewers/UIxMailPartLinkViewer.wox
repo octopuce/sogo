@@ -19,6 +19,10 @@
         <md-tooltip md-direction="left"><var:string label:value="View Attachment"/></md-tooltip>
         <md-icon>open_in_new</md-icon>
       </md-button></var:if>
+      <md-button class="sg-icon-button" ng-click="viewer.cloudDownload($pathForDownload)">
+        <md-tooltip md-direction="left"><var:string label:value="Save Attachment to my Cloud"/></md-tooltip>
+        <md-icon>cloud</md-icon>
+      </md-button>
       <md-button class="sg-icon-button" var:href="pathForDownload">
         <md-tooltip md-direction="left"><var:string label:value="Save Attachment"/></md-tooltip>
         <md-icon>file_download</md-icon>

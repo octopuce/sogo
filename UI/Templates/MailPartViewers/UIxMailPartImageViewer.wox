@@ -17,7 +17,11 @@
     <md-dialog-actions layout="row" layout-align="start center">
       <div class="md-flex sg-attachment-size">
         <var:string value="bodyInfo.size" formatter="sizeFormatter"/>
-      </div>
+      </div> 
+      <md-button class="sg-icon-button" ng-click="viewer.cloudDownload($pathForDownload)">
+        <md-tooltip md-direction="left"><var:string label:value="Save Attachment to my Cloud"/></md-tooltip>
+        <md-icon>cloud</md-icon>
+      </md-button>
       <md-button class="sg-icon-button" var:href="pathForDownload">
         <md-tooltip md-direction="left"><var:string label:value="Save Attachment"/></md-tooltip>
         <md-icon>file_download</md-icon>

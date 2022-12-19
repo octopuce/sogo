@@ -106,6 +106,12 @@
                   <var:string label:value="Download all attachments"/>
                 </md-button>
               </md-menu-item>
+              <md-menu-item ng-show="::viewer.message.hasAttachments()">
+                <md-button label:aria-label="Copy all attachments to my Cloud"
+                           ng-click="viewer.message.downloadAttachmentsCloud()">
+                  <var:string label:value="Copy all attachments to my Cloud"/>
+                </md-button>
+              </md-menu-item>
               <md-menu-item>
                 <md-button label:aria-label="View Message Source"
                            ng-click="viewer.toggleRawSource($event)">

@@ -553,6 +553,10 @@
       return _convertToComponent($event, 'task');
     };
 
+      this.cloudDownload = function(message) {
+          console.debug("in CloudDownload");
+}
+
     function _convertToComponent($event, type) {
       vm.message.$plainContent().then(function(data) {
         var componentData = {
