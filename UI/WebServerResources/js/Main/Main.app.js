@@ -29,7 +29,7 @@
       this.verificationCodePattern = '\\d{6}';
 
       // Password policy - change expired password
-      this.passwords = { newPassword: null, newPasswordConfirmation: null, oldPassword: null };
+      this.passwords = { newPassword: null, newPasswordConfirmation: null, oldPassword: null, visible: false };
 
       // Password recovery
       this.passwordRecovery = {
@@ -41,7 +41,8 @@
         passwordRecoveryToken: null,
         passwordRecoveryLinkTimer: null,
         passwordRecoverySecondaryEmailText: null,
-        passwordRecoveryMailDomain: null
+        passwordRecoveryMailDomain: null,
+        showLoader: false
       };
 
       // Show login once everything is initialized
@@ -151,9 +152,14 @@
     };
 
     this.restoreLogin = function() {
-      vm.loginState = false;
-      delete vm.creds.verificationCode;
-      vm.passwordRecoveryAbort();
+      vm.showLogin = false;
+      if ('SecretQuestion' === vm.passwordRecovery.passwordRecoveryMode) {
+        rippleDo('loginContent');
+        vm.passwordRecoveryInfo();
+      } else {
+        delete vm.creds.verificationCode;
+        vm.passwordRecoveryAbort();
+      }
     };
 
     this.continueLogin = function() {
@@ -219,6 +225,7 @@
 
     this.passwordRecoveryInfo = function () {
       vm.loginState = 'passwordrecovery';
+      vm.passwordRecovery.showLoader = true;
       Authentication.passwordRecovery(this.creds.username, this.creds.domain).then(function (data) {
         vm.passwordRecovery.passwordRecoveryMode = data.mode;
         if ('SecretQuestion' === data.mode) {
@@ -230,24 +237,30 @@
           vm.loginState = 'error';
           vm.errorMessage = l('No password recovery method has been defined for this user');
         }
+        vm.passwordRecovery.showLoader = false;
       }, function (msg) {
         vm.loginState = 'error';
         vm.errorMessage = msg;
+        vm.passwordRecovery.showLoader = false;
       });
     };
 
     this.passwordRecoveryEmail = function () {
+      vm.passwordRecovery.showLoader = true;
       Authentication.passwordRecoveryEmail(this.creds.username, this.creds.domain
         , this.passwordRecovery.passwordRecoveryMode
         , this.passwordRecovery.passwordRecoveryMailDomain).then(function () {
           vm.loginState = 'sendrecoverymail';
+          vm.passwordRecovery.showLoader = false;
       }, function (msg) {
         vm.loginState = 'error';
         vm.errorMessage = msg;
+          vm.passwordRecovery.showLoader = false;
       });
     };
 
     this.passwordRecoveryCheck = function () {
+      vm.passwordRecovery.showLoader = true;
       Authentication.passwordRecoveryCheck(this.creds.username, this.creds.domain
                                           , this.passwordRecovery.passwordRecoveryMode
                                           , this.passwordRecovery.passwordRecoveryQuestionKey
@@ -259,9 +272,11 @@
         } else if ("SecondaryEmail" == vm.passwordRecovery.passwordRecoveryMode) {
           vm.loginState = 'sendrecoverymail';
         }
+        vm.passwordRecovery.showLoader = false;
       }, function (msg) {
         vm.loginState = 'error';
         vm.errorMessage = msg;
+        vm.passwordRecovery.showLoader = false;
       });
     };
 
@@ -281,6 +296,7 @@
       this.passwordRecovery.passwordRecoveryToken = null;
       this.passwordRecovery.passwordRecoverySecondaryEmailText = null;
       this.passwordRecovery.passwordRecoveryMailDomain = null;
+      this.passwordRecovery.showLoader = false;
       $window.location.reload(true);
     };
 
@@ -306,6 +322,17 @@
       }
     };
 
+    this.changePasswordVisibility = function () {
+      this.passwords.visible = !this.passwords.visible;
+      var field = document.getElementById("passwordField");
+      if (this.passwords.visible) {
+        field.type = "text";
+        document.getElementById("password-visibility-icon").innerHTML = 'visibility_off';
+      } else {
+        field.type = "password";
+        document.getElementById("password-visibility-icon").innerHTML = 'visibility';
+      }
+    }
   }
 
   angular
