@@ -42,6 +42,7 @@ reply_info = "Ceci est une réponse à un événement que vous avez organisé.";
 /* Tooltips */
 "View Attachment" = "Voir fichier joint";
 "Save Attachment" = "Sauvegarder fichier joint";
+"Save attachment to my Cloud" = "Sauver dans mon Cloud";
 "CC" = "Copie à";
 "Cancel" = "Annuler";
 "OK" = "Ok";

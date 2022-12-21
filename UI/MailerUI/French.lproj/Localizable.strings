@@ -254,6 +254,7 @@
 
 /* Message view "more" menu: download all attachments as a zip archive */
 "Download all attachments" = "Télécharger les pièces jointes";
+"Copy all attachments to my Cloud" = "Copier les pièces jointes vers mon Cloud";
 
 /* Filename prefix when downloading all attachments as a zip archive */
 "attachments" = "pièces-jointes";
