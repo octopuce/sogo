@@ -30,8 +30,10 @@
       this.$alwaysShowDetailedRecipients = (!stateMessage.to || stateMessage.to.length < 5) && (!stateMessage.cc || stateMessage.cc.length < 5);
       this.$showDetailedRecipients = this.$alwaysShowDetailedRecipients;
       this.showRawSource = false;
+      this.cloudUrls = false;
 
       _registerHotkeys(hotkeys);
+      _initCloudDownload();
 
       // Detect if this is message appears in a separate window
       try {
@@ -553,9 +555,86 @@
       return _convertToComponent($event, 'task');
     };
 
-      this.cloudDownload = function(message) {
-          console.debug("in CloudDownload");
-}
+      function _initCloudDownload() {
+          import('./filePickerWrapper.js');
+
+          document.vm = vm; // need that to go from angularJs to Vue
+          if (!document.clouddownloadinstalled) { // we want to do this only ONCE, since we can't really remove the eventListener later on.
+	      document.addEventListener('get-save-file-path', function(e) { 
+                  document.vm.clouddownload_step2( // save to THIS folder, THESE urls.
+                      e.detail.path
+                  ); 
+              });
+              document.clouddownloadinstalled=true; 
+          }
+      };
+
+      // download all attachments to the cloud:
+      this.cloudDownloadAll = function() {
+          console.debug('will try to save all to cloud ');
+          console.debug(this.message);
+          this.cloudUrls = []; 
+          this.message.parts.content.forEach( (part) => {
+              if (part.type=="UIxMailPartLinkViewer" || part.type=="UIxMailPartImageViewer") {
+                  // save it :) 
+                  let tmp = part.content.substring(part.content.indexOf('data-id="')+9);
+                  this.cloudUrls.push(tmp.substring(0,tmp.indexOf('"')));
+              }
+          });
+          console.debug(this.cloudUrls);
+          this.clouddownload_step1();         
+      };
+
+      // download ONE attachment to the cloud:
+      this.cloudDownload = function(m) {
+          // here we have m.target.dataset.id which points to the downloadable (with cookie ;) ) attachment. We call our cloudFolderPicker function then
+          console.debug('will try to save to cloud '+ m.target.dataset.id );
+          this.cloudUrls= [ m.target.dataset.id ];
+          this.clouddownload_step1();         
+      };
+
+
+    this.clouddownload_step1 = async function() {
+        let response = await fetch('/octomail/nctoken.php');
+            // .then(function(data) {
+            // now we can show the nextcloud popup let's try importing it directly 
+        let data = await response.json();
+        const filepicker = window.createFilePicker('mount_point', {
+	    url: data.url,
+            login: data.username,
+            password: data.token,
+            multipleDownload: true,
+            enableGetFilesPath: true,
+            multipleDownload: true,
+        });
+        filepicker.getSaveFilePath();
+    };
+
+    // send the files to get from the nextcloud as attachment to ncdownload:
+    this.clouddownload_step2 = async function(folder) {
+        const formData = new FormData();
+        this.cloudUrls.forEach((url) => {
+            formData.append('urls[]',url);
+        });
+        formData.append('folder',folder);
+
+        // this url is downloading server-to-server from Nextcloud to Sogo. 
+        // you may need to change your url and change to your own code, using our provided ncdownload.php code as example.  
+        let response = await fetch("/octomail/ncdownload.php", {
+            method: 'POST', 
+            credentials: 'include',
+            body: formData            
+        });
+
+        let data = await response.json();
+
+        console.debug("after call to ncdownload:");
+        console.debug(data);
+
+     }
+        
+
+
 
     function _convertToComponent($event, type) {
       vm.message.$plainContent().then(function(data) {

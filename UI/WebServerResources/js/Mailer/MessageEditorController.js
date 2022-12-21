@@ -291,7 +291,7 @@
 
 
       this.cloudUpload = function () {
-          document.vm = vm; // is it doing a "pointer"-like reference or a full copy? no idea :) 
+          document.vm = vm; // need that to go from angularJs to Vue
           if (!document.clouduploadinstalled) { // we want to do this only ONCE, since we can't really remove the eventListener later on.
 	      document.addEventListener('get-files-path', function(e) { 
                   document.vm.cloudupload_step2(

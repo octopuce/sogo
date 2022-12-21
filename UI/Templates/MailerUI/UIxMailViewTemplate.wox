@@ -108,7 +108,7 @@
               </md-menu-item>
               <md-menu-item ng-show="::viewer.message.hasAttachments()">
                 <md-button label:aria-label="Copy all attachments to my Cloud"
-                           ng-click="viewer.message.downloadAttachmentsCloud()">
+                           ng-click="viewer.cloudDownloadAll()">
                   <var:string label:value="Copy all attachments to my Cloud"/>
                 </md-button>
               </md-menu-item>
