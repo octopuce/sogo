@@ -187,7 +187,7 @@
             // Clean cookies for reauthenticate
             $cookies.remove('XSRF-TOKEN', { path: '/SOGo/' });
             $cookies.remove('0xHIGHFLYxSOGo', { path: '/SOGo/' });
-            
+
             d.resolve({url: redirectUrl(userName, domain)});
           }, function(response) {
             var error,
@@ -226,7 +226,7 @@
         },
 
         passwordRecovery: function (userName, domain) {
-          const self = this;
+          var self = this;
 
           var d = $q.defer(),
             xsrfCookie = $cookies.get('XSRF-TOKEN');
@@ -257,7 +257,7 @@
 
 
         passwordRecoveryEmail: function (userName, domain, mode, mailDomain) {
-          const self = this;
+          var self = this;
 
           var d = $q.defer(),
             xsrfCookie = $cookies.get('XSRF-TOKEN');
@@ -283,7 +283,7 @@
 
 
         passwordRecoveryCheck: function (userName, domain, mode, question, answer, mailDomain) {
-          const self = this;
+          var self = this;
 
           var d = $q.defer(),
             xsrfCookie = $cookies.get('XSRF-TOKEN');
@@ -308,25 +308,17 @@
         },
 
         passwordRecoveryEnabled: function (userName, domain) {
-          const self = this;
+          var self = this;
 
-          var d = $q.defer(),
-            xsrfCookie = $cookies.get('XSRF-TOKEN');
-
-          $cookies.remove('XSRF-TOKEN', { path: '/SOGo/' });
+          var d = $q.defer();
           
           $http({
             method: 'POST',
             url: '/SOGo/so/passwordRecoveryEnabled',
-            headers: {
-              'X-XSRF-TOKEN': xsrfCookie
-            },
             data: { userName: userName, domain: domain }
           }).then(function (response) {
             d.resolve(response.data.domain);
           }, function () {
-            // Restore the cookie
-            $cookies.put('XSRF-TOKEN', xsrfCookie, { path: '/SOGo/' });
             d.reject();
           });
           return d.promise;

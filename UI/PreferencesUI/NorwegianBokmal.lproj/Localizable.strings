@@ -391,7 +391,7 @@
 "To or Cc" = "Til eller Kopi";
 "Size (Kb)" = "Størrelse (Kb)";
 "Header" = "Tittel";
-"Body" = "Kropp";
+"Body" = "Format";
 "Flag the message with" = "Flagg meldingen med";
 
 /* Select field label of "flag message" mail filter action */
@@ -492,9 +492,9 @@
 "Let SOGo handle everything" = "La SOGo håndtere alt. ";
 
 /* Password Recovery */
-"Password recovery mode" = "Password recovery";
-"Question" = "Question";
-"Secondary e-mail" = "Secondary e-mail";
-"Answer" = "Answer";
-"Password recovery" = "Password recovery";
-"Password change" = "Password change";
+"Password recovery mode" = "Tilbakestille passord";
+"Question" = "Spørsmål";
+"Secondary e-mail" = "Sekundær e-post";
+"Answer" = "Svar";
+"Password recovery" = "Tilbakestille passord";
+"Password change" = "Passordendring";
